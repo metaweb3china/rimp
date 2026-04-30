@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  name      String
+  role      Role     @default(RESEARCHER)
+  active    Boolean  @default(true)
+  createdBy Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  experiments Experiment[]
+  createdUsers User[] @relation("UserCreatedUsers")
+  creator      User?  @relation("UserCreatedUsers", fields: [createdBy], references: [id])
+}
+
+enum Role {
+  ADMIN
+  LEAD
+  RESEARCHER
+}
+
+model Material {
+  id      Int    @id @default(autoincrement())
+  name    String
+  unit    String @default("g/L")
+  specs   String?
+  remark  String?
+  active  Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  experimentMaterials ExperimentMaterial[]
+}
+
+model Experiment {
+  id          Int      @id @default(autoincrement())
+  title       String
+  purpose     String?
+  process     String?
+  summary     String?
+  equipment   String?
+  board       String?
+  status      String   @default("draft")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+
+  materials  ExperimentMaterial[]
+  records    ExperimentRecord[]
+  tests      TestResult[]
+  images     ExperimentImage[]
+}
+
+model ExperimentMaterial {
+  id           Int        @id @default(autoincrement())
+  experimentId Int
+  experiment   Experiment @relation(fields: [experimentId], references: [id], onDelete: Cascade)
+  materialId   Int
+  material     Material   @relation(fields: [materialId], references: [id])
+  dosage       String?
+}
+
+model ExperimentRecord {
+  id           Int        @id @default(autoincrement())
+  experimentId Int
+  experiment   Experiment @relation(fields: [experimentId], references: [id], onDelete: Cascade)
+
+  degreasing   String?
+  pickling     String?
+  derusting    String?
+  conditioning String?
+  phosphating  String?
+  passivation  String?
+  electrophoresis String?
+
+  reaction     String?
+  blackAsh     String?
+  filmAppearance String?
+  filmWeight   String?
+  xrfSiZr      String?
+  xrfAlloy     String?
+  crystalImage String?
+  crystalDesc  String?
+  edsResult    String?
+  pRatio       String?
+  paintThickness String?
+
+  createdAt DateTime @default(now())
+}
+
+model TestResult {
+  id           Int        @id @default(autoincrement())
+  experimentId Int
+  experiment   Experiment @relation(fields: [experimentId], references: [id], onDelete: Cascade)
+
+  type        String
+  duration    String?
+  result      String?
+  imagePath   String?
+  description String?
+  createdAt   DateTime @default(now())
+}
+
+model ExperimentImage {
+  id           Int        @id @default(autoincrement())
+  experimentId Int
+  experiment   Experiment @relation(fields: [experimentId], references: [id], onDelete: Cascade)
+  type         String
+  filePath     String
+  description  String?
+  createdAt    DateTime @default(now())
+}
