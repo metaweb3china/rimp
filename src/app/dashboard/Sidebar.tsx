@@ -14,6 +14,7 @@ export default function Sidebar({ auth }: { auth: { userId: number; username: st
   const links = [
     { href: '/dashboard', label: '总览', icon: '📊' },
     { href: '/experiments', label: '实验记录', icon: '🧪' },
+    { href: '/experiments/record2', label: '实验记录2', icon: '📋' },
     { href: '/materials', label: '原材料库', icon: '🧴' },
   ]
   if (auth.role !== 'RESEARCHER') {

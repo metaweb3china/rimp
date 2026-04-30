@@ -18,9 +18,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  experiments Experiment[]
-  createdUsers User[] @relation("UserCreatedUsers")
-  creator      User?  @relation("UserCreatedUsers", fields: [createdBy], references: [id])
+  experiments    Experiment[]
+  record2        ExperimentRecord2[]
+  createdUsers   User[] @relation("UserCreatedUsers")
+  creator        User?  @relation("UserCreatedUsers", fields: [createdBy], references: [id])
 }
 
 enum Role {
@@ -121,4 +122,43 @@ model ExperimentImage {
   filePath     String
   description  String?
   createdAt    DateTime @default(now())
+}
+
+model ExperimentRecord2 {
+  id            Int      @id @default(autoincrement())
+  seq           Int      @default(0)
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  degreasing    String?
+  pickling      String?
+  derusting     String?
+  conditioning  String?
+  phosphating   String?
+  passivation   String?
+  electrophoresis String?
+
+  preDegreasing  String?
+  prePickling    String?
+  preConditioning String?
+  prePhosphating  String?
+  prePassivation  String?
+
+  filmWeight     String?
+  xrfZrSi        String?
+  xrfAlloy       String?
+  crystalImage   String?
+  pRatio         String?
+
+  paintAppearance  String?
+  paintThickness   String?
+  impactImage      String?
+  saltSpray450h    String?
+  saltSpray720h    String?
+  saltSpray1000h   String?
+  corrosionImage   String?
+  corrosionWidth   String?
+  adhesion1000h    String?
 }
